@@ -1,4 +1,4 @@
-function sendMessage() {
+async function sendMessage() {
 
     let input = document.getElementById("user-input");
     let message = input.value.trim();
@@ -7,57 +7,124 @@ function sendMessage() {
 
     let chatBox = document.getElementById("chat-box");
 
-    // User Message
+    // User message
     let userDiv = document.createElement("div");
     userDiv.className = "user-message";
+    chatBox.scrollTop =
+chatBox.scrollHeight;
     userDiv.innerText = message;
-    chatBox.appendChild(userDiv);
+    chatBox.appendChild(userDiv);saveChat();
 
     input.value = "";
 
-    // Typing message
+    // Typing indicator
     let typingDiv = document.createElement("div");
     typingDiv.className = "bot-message";
+    chatBox.scrollTop =
+chatBox.scrollHeight;
     typingDiv.id = "typing";
-    typingDiv.innerText = "AI is typing...";
-    chatBox.appendChild(typingDiv);
+    typingDiv.innerHTML = `
+<span>.</span>
+<span>.</span>
+<span>.</span>
+`;
+    chatBox.appendChild(typingDiv);saveChat();
 
     chatBox.scrollTop = chatBox.scrollHeight;
 
-    setTimeout(() => {
+    try {
+
+        const response = await fetch("http://127.0.0.1:5000/chat", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                message: message
+            })
+        });
+
+        const data = await response.json();
 
         typingDiv.remove();
 
         let botDiv = document.createElement("div");
         botDiv.className = "bot-message";
+        chatBox.scrollTop =
+chatBox.scrollHeight;
+        botDiv.innerText = data.reply;
 
-        let msg = message.toLowerCase();
+        chatBox.appendChild(botDiv);saveChat();
 
-        if (msg.includes("hello") || msg.includes("hi")) {
-            botDiv.innerText = "Assalamualaikum! Main Hassan's AI hoon 👋";
-        }
-        else if (msg.includes("name")) {
-            botDiv.innerText = "Mera naam Hassan's AI hai.";
-        }
-        else if (msg.includes("time")) {
-            botDiv.innerText = new Date().toLocaleTimeString();
-        }
-        else if (msg.includes("date")) {
-            botDiv.innerText = new Date().toLocaleDateString();
-        }
-        else {
-            botDiv.innerText = "Abhi main simple chatbot hoon. Jaldi AI banne wala hoon 😎";
-        }
+    } catch (error) {
 
-        chatBox.appendChild(botDiv);
-        chatBox.scrollTop = chatBox.scrollHeight;
+        typingDiv.innerText =
+            "Connection error. Backend not running.";
 
-    }, 1200);
+        console.error(error);
+    }
+
+    chatBox.scrollTop = chatBox.scrollHeight;
 }
 
 document.getElementById("user-input")
-.addEventListener("keypress", function(event){
-    if(event.key === "Enter"){
+.addEventListener("keypress", function(event) {
+
+    if (event.key === "Enter") {
         sendMessage();
     }
+
 });
+function saveChat() {
+    localStorage.setItem(
+        "chatHistory",
+        document.getElementById("chat-box").innerHTML
+    );
+}
+
+window.onload = function () {
+    const history = localStorage.getItem("chatHistory");
+
+    if (history) {
+        document.getElementById("chat-box").innerHTML = history;
+    }
+};
+document.getElementById("clear-btn")
+.addEventListener("click", () => {
+
+    localStorage.removeItem("chatHistory");
+
+    document.getElementById("chat-box").innerHTML = "";
+
+});
+document.getElementById("new-chat-btn")
+.addEventListener("click", () => {
+
+    localStorage.removeItem("chatHistory");
+
+    document.getElementById("chat-box").innerHTML = "";
+
+});
+document.getElementById("new-chat-btn")
+.addEventListener("click", () => {
+
+    localStorage.removeItem("chatHistory");
+
+    document.getElementById("chat-box").innerHTML = "";
+
+});
+
+document.getElementById("clear-btn")
+.addEventListener("click", () => {
+
+    localStorage.removeItem("chatHistory");
+
+    document.getElementById("chat-box").innerHTML = "";
+
+});
+document.getElementById("status").innerText =
+"🟡 Thinking...";
+document.getElementById("status").innerText =
+"🟢 Online";
+document.getElementById("status").innerText =
+"🟢 Online";
