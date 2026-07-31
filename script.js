@@ -16,6 +16,7 @@ async function sendMessage() {
 
     if (message === "") return;
     hideWelcome();
+    closeMobileMenu();
 
     let chatBox = document.getElementById("chat-box");
     let status = document.getElementById("status");
@@ -217,6 +218,7 @@ function(){
     localStorage.removeItem("chatHistory");
 
     document.getElementById("chat-box").innerHTML = "";
+    location.reload();
 
 });
 
@@ -431,5 +433,92 @@ if(themeBtn){
         }
 
     });
+
+}
+/* ===============================
+   CHATGPT STYLE MOBILE SIDEBAR
+================================ */
+
+
+const menuBtn = document.getElementById("menu-btn");
+const sidebar = document.getElementById("sidebar");
+
+
+if(menuBtn && sidebar){
+
+
+menuBtn.addEventListener(
+"click",
+function(){
+
+    sidebar.classList.toggle("active");
+
+});
+
+
+}
+
+
+
+// Sidebar bahar click karne se close
+
+document.addEventListener(
+"click",
+function(e){
+
+
+if(
+sidebar &&
+sidebar.classList.contains("active") &&
+!sidebar.contains(e.target) &&
+!menuBtn.contains(e.target)
+
+){
+
+sidebar.classList.remove("active");
+
+}
+
+
+});
+
+
+
+
+
+// Sidebar new chat ke baad close
+
+if(sidebarNewChat){
+
+sidebarNewChat.addEventListener(
+"click",
+function(){
+
+    if(sidebar){
+
+        sidebar.classList.remove("active");
+
+    }
+
+});
+
+
+}
+
+
+
+
+// Mobile pe message bhejne ke baad sidebar close
+
+async function closeMobileMenu(){
+
+if(
+window.innerWidth <= 700 &&
+sidebar
+){
+
+sidebar.classList.remove("active");
+
+}
 
 }
