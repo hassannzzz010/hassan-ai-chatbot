@@ -1291,3 +1291,134 @@ body{
 
 
 }
+/* =========================
+   FINAL MOBILE FIX
+========================= */
+
+html,
+body{
+
+    width:100%;
+    max-width:100%;
+    overflow-x:hidden;
+
+}
+
+
+@media(max-width:700px){
+
+
+    body{
+
+        padding:0;
+
+        overflow:hidden;
+
+    }
+
+
+    .chat-container{
+
+        width:100%;
+
+        max-width:100%;
+
+        height:100dvh;
+
+        border-radius:0;
+
+    }
+
+
+    #chat-box{
+
+        width:100%;
+
+        overflow-x:hidden;
+
+    }
+
+
+    /* Welcome center */
+
+    #welcome-screen{
+
+        width:100%;
+
+        padding:30px 15px;
+
+        display:flex;
+
+        justify-content:center;
+
+        align-items:center;
+
+    }
+
+
+    #welcome-screen h1{
+
+        font-size:28px;
+
+    }
+
+
+    .suggestion-grid{
+
+        width:100%;
+
+        grid-template-columns:1fr;
+
+        padding:0 10px;
+
+    }
+
+
+    .suggestion-card{
+
+        width:100%;
+
+    }
+
+
+
+    /* Bottom input fixed */
+
+    .input-area{
+
+        width:100%;
+
+        box-sizing:border-box;
+
+        flex-shrink:0;
+
+        padding:
+        10px;
+
+    }
+
+
+    #user-input{
+
+        min-width:0;
+
+        width:100%;
+
+    }
+
+
+    #mic-btn{
+
+        flex-shrink:0;
+
+    }
+
+
+    .input-area button:not(#mic-btn){
+
+        flex-shrink:0;
+
+    }
+
+
+}
