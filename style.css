@@ -956,3 +956,41 @@ body,
 html{
     scroll-behavior:smooth;
 }
+@media(max-width:768px){
+
+    .chat-container{
+        width:100%;
+        height:100vh;
+        border-radius:0;
+    }
+
+    .input-area{
+        gap:8px;
+        padding:10px;
+    }
+
+    #user-input{
+        min-width:0;
+        font-size:14px;
+    }
+
+    #mic-btn{
+        width:48px;
+        height:48px;
+        font-size:18px;
+        flex-shrink:0;
+    }
+
+    .input-area button{
+        min-width:70px;
+        height:48px;
+        padding:0 12px;
+        flex-shrink:0;
+    }
+
+    .bot-message,
+    .user-message{
+        max-width:90%;
+    }
+
+}
