@@ -1,112 +1,218 @@
+
+function getTime(){
+
+    const now = new Date();
+
+    return now.toLocaleTimeString([],{
+        hour:'2-digit',
+        minute:'2-digit'
+    });
+
+}
 async function sendMessage() {
 
     let input = document.getElementById("user-input");
     let message = input.value.trim();
 
     if (message === "") return;
+    hideWelcome();
 
     let chatBox = document.getElementById("chat-box");
+    let status = document.getElementById("status");
 
     // User message
     let userDiv = document.createElement("div");
-    userDiv.className = "user-message";
-    chatBox.scrollTop =
-chatBox.scrollHeight;
-    userDiv.innerText = message;
-    chatBox.appendChild(userDiv);saveChat();
+
+userDiv.className = "message-row user-row";
+
+userDiv.innerHTML = `
+<div class="avatar user-avatar">U</div>
+
+<div>
+
+<div class="user-message">
+${message}
+</div>
+
+<div class="message-time">
+${getTime()}
+</div>
+
+</div>
+`;
+
+chatBox.appendChild(userDiv);
 
     input.value = "";
 
-    // Typing indicator
+    saveChat();
+
+
+    // Thinking status
+    if(status){
+        status.innerText = "🟡 Thinking...";
+    }
+
+
+    // Typing animation
     let typingDiv = document.createElement("div");
+
     typingDiv.className = "bot-message";
-    chatBox.scrollTop =
-chatBox.scrollHeight;
     typingDiv.id = "typing";
+
     typingDiv.innerHTML = `
-<span>.</span>
-<span>.</span>
-<span>.</span>
-`;
-    chatBox.appendChild(typingDiv);saveChat();
+        <span>.</span>
+        <span>.</span>
+        <span>.</span>
+    `;
+
+    chatBox.appendChild(typingDiv);
 
     chatBox.scrollTop = chatBox.scrollHeight;
+
 
     try {
 
-        const response = await fetch("https://hassannzzz010.pythonanywhere.com/chat", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                message: message
-            })
-        });
+        const response = await fetch(
+            "https://hassannzzz010.pythonanywhere.com/chat",
+            {
+                method: "POST",
+
+                headers:{
+                    "Content-Type":"application/json"
+                },
+
+                body: JSON.stringify({
+                    message: message
+                })
+            }
+        );
+
 
         const data = await response.json();
 
+
         typingDiv.remove();
 
-        let botDiv = document.createElement("div");
-        botDiv.className = "bot-message";
-        chatBox.scrollTop =
-chatBox.scrollHeight;
-        botDiv.innerText = data.reply;
 
-        chatBox.appendChild(botDiv);saveChat();
+       let botDiv = document.createElement("div");
 
-    } catch (error) {
+botDiv.className = "message-row";
+
+botDiv.innerHTML = `
+<div class="avatar bot-avatar">AI</div>
+
+<div>
+
+<div class="bot-message">
+${data.reply}
+</div>
+
+<div class="message-time">
+${getTime()}
+</div>
+
+</div>
+`;
+
+chatBox.appendChild(botDiv);
+
+        saveChat();
+
+
+        if(status){
+            status.innerText = "🟢 Online";
+        }
+
+
+    } catch(error){
+
 
         typingDiv.innerText =
-            "Connection error. Backend not running.";
+        "Connection error. Backend not responding.";
+
 
         console.error(error);
+
+
+        if(status){
+            status.innerText = "🔴 Offline";
+        }
+
     }
 
+
     chatBox.scrollTop = chatBox.scrollHeight;
+
 }
 
-document.getElementById("user-input")
-.addEventListener("keypress", function(event) {
 
-    if (event.key === "Enter") {
+
+// Enter button
+document
+.getElementById("user-input")
+.addEventListener(
+"keypress",
+function(event){
+
+    if(event.key === "Enter"){
+
         sendMessage();
+
     }
 
 });
-function saveChat() {
+
+
+
+// Save chat
+function saveChat(){
+
     localStorage.setItem(
         "chatHistory",
         document.getElementById("chat-box").innerHTML
     );
+
 }
 
-window.onload = function () {
-    const history = localStorage.getItem("chatHistory");
 
-    if (history) {
-        document.getElementById("chat-box").innerHTML = history;
+
+// Load chat
+window.onload = function(){
+
+    let history =
+    localStorage.getItem("chatHistory");
+
+
+    if(history){
+
+        document.getElementById("chat-box").innerHTML =
+        history;
+        
+
+    const welcome =
+    document.getElementById("welcome-screen");
+
+    if(welcome){
+
+        welcome.style.display = "none";
+
+    
+
+}
+
     }
+
 };
-document.getElementById("clear-btn")
-.addEventListener("click", () => {
 
-    localStorage.removeItem("chatHistory");
 
-    document.getElementById("chat-box").innerHTML = "";
 
-});
-document.getElementById("new-chat-btn")
-.addEventListener("click", () => {
-
-    localStorage.removeItem("chatHistory");
-
-    document.getElementById("chat-box").innerHTML = "";
-
-});
-document.getElementById("new-chat-btn")
-.addEventListener("click", () => {
+// Clear Chat
+document
+.getElementById("clear-btn")
+.addEventListener(
+"click",
+function(){
 
     localStorage.removeItem("chatHistory");
 
@@ -114,17 +220,216 @@ document.getElementById("new-chat-btn")
 
 });
 
-document.getElementById("clear-btn")
-.addEventListener("click", () => {
+
+
+
+// New Chat
+document
+.getElementById("new-chat-btn")
+.addEventListener(
+"click",
+async function(){
+
 
     localStorage.removeItem("chatHistory");
 
     document.getElementById("chat-box").innerHTML = "";
 
+
+    // Backend memory clear
+    try{
+
+        await fetch(
+        "https://hassannzzz010.pythonanywhere.com/new-chat",
+        {
+            method:"POST"
+        });
+
+    }
+    catch(error){
+
+        console.log(error);
+
+    }
+
+
 });
-document.getElementById("status").innerText =
-"🟡 Thinking...";
-document.getElementById("status").innerText =
-"🟢 Online";
-document.getElementById("status").innerText =
-"🟢 Online";
+function fillPrompt(text){
+
+    document.getElementById("user-input").value = text;
+
+}
+
+function hideWelcome(){
+
+    const welcome =
+    document.getElementById("welcome-screen");
+
+    if(welcome){
+
+        welcome.style.display = "none";
+
+    }
+
+}
+const SpeechRecognition =
+window.SpeechRecognition ||
+window.webkitSpeechRecognition;
+
+if(SpeechRecognition){
+
+    const recognition =
+    new SpeechRecognition();
+
+    recognition.continuous = false;
+    recognition.interimResults = true;
+    recognition.onresult =
+function(event){
+
+    let transcript = "";
+
+    for(
+        let i = 0;
+        i < event.results.length;
+        i++
+    ){
+
+        transcript +=
+        event.results[i][0].transcript;
+
+    }
+
+    document.getElementById(
+    "user-input"
+    ).value = transcript;
+
+};
+
+    recognition.lang = "en-US";
+
+    const micBtn =
+    document.getElementById("mic-btn");
+
+    micBtn.addEventListener(
+    "click",
+    function(){
+
+        recognition.start();
+
+        micBtn.classList.add(
+        "listening"
+        );
+
+    });
+
+    recognition.onresult =
+    function(event){
+
+        document.getElementById(
+        "user-input"
+        ).value =
+        event.results[0][0].transcript;
+
+    };
+
+    recognition.onend =
+function(){
+
+    micBtn.classList.remove(
+    "listening"
+    );
+
+    const text =
+    document.getElementById(
+    "user-input"
+    ).value.trim();
+
+    if(text){
+
+        sendMessage();
+
+    }
+
+};
+
+    };
+const sidebarNewChat =
+document.getElementById(
+"sidebar-new-chat"
+);
+
+if(sidebarNewChat){
+
+    sidebarNewChat.addEventListener(
+    "click",
+    function(){
+
+        document
+        .getElementById(
+        "new-chat-btn"
+        )
+        .click();
+
+    });
+
+}
+const themeBtn =
+document.getElementById(
+"theme-toggle"
+);
+
+if(themeBtn){
+
+    if(
+        localStorage.getItem("theme")
+        === "light"
+    ){
+
+        document.body.classList.add(
+        "light-theme"
+        );
+
+        themeBtn.innerText =
+        "☀️ Light Mode";
+
+    }
+
+    themeBtn.addEventListener(
+    "click",
+    function(){
+
+        document.body.classList.toggle(
+        "light-theme"
+        );
+
+        const isLight =
+        document.body.classList.contains(
+        "light-theme"
+        );
+
+        if(isLight){
+
+            localStorage.setItem(
+            "theme",
+            "light"
+            );
+
+            themeBtn.innerText =
+            "☀️ Light Mode";
+
+        }
+        else{
+
+            localStorage.setItem(
+            "theme",
+            "dark"
+            );
+
+            themeBtn.innerText =
+            "🌙 Dark Mode";
+
+        }
+
+    });
+
+}

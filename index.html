@@ -8,21 +8,44 @@
 </head>
 
 <body>
+    <div class="bg-orb orb1"></div>
+<div class="bg-orb orb2"></div>
+<div class="bg-orb orb3"></div>
+<div class="sidebar">
+
+    <div class="sidebar-logo">
+        🤖 Hassan AI
+    </div>
+    <button id="theme-toggle" class="sidebar-btn">
+🌙 Dark Mode
+</button>
+
+    <button class="sidebar-btn" id="sidebar-new-chat">
+        ➕ New Chat
+    </button>
+
+    <div class="chat-history">
+
+        <div class="history-item">
+            💬 Current Chat
+        </div>
+        
+</div>
+
+    </div>
+
+</div>
 
 <div class="chat-container">
 
     <div class="header">
 
-        <div class="logo-section">
+        <div class="logo">AI</div>
 
-            <div class="logo">🤖</div>
-
-            <div>
-                <h2>Hassan's AI</h2>
-                <span class="status">🟢 Online</span>
-            </div>
-
-        </div>
+<div>
+    <h2>Hassan's AI</h2>
+    <span class="status" id="status">🟢 Online</span>
+</div>
 
         <div class="header-buttons">
 
@@ -40,9 +63,50 @@
 
     <div id="chat-box">
 
-        <div class="bot-message">
-            Assalamualaikum! Main Hassan's AI hoon. 😊
+       <div class="message-row">
+
+    <div class="avatar bot-avatar">
+        AI
+    </div>
+    <div id="welcome-screen">
+
+    <h1>👋 Welcome to Hassan's AI</h1>
+
+    <p>
+        Ask anything, get instant answers and explore ideas.
+    </p>
+
+    <div class="suggestion-grid">
+
+        <div class="suggestion-card"
+             onclick="fillPrompt('Explain Artificial Intelligence')">
+            🤖 Artificial Intelligence
         </div>
+
+        <div class="suggestion-card"
+             onclick="fillPrompt('Help me study Biology')">
+            📚 Study Help
+        </div>
+
+        <div class="suggestion-card"
+             onclick="fillPrompt('Give me creative project ideas')">
+            💡 Project Ideas
+        </div>
+
+        <div class="suggestion-card"
+             onclick="fillPrompt('Motivate me today')">
+            🚀 Motivation
+        </div>
+        <div class="message-time">
+Just now
+</div>
+
+    </div>
+
+</div>
+
+   
+</div>
 
     </div>
 
@@ -53,6 +117,9 @@
             id="user-input"
             placeholder="Ask anything..."
         >
+        <button id="mic-btn">
+🎤
+</button>
 
         <button onclick="sendMessage()">
             Send
